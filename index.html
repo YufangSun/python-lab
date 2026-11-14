@@ -1,0 +1,661 @@
+<!doctype html><html><head><title>Coding Class Python Lab</title><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito+Sans:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #EEF2F8;
+    --panel: #FBFCFE;
+    --ink: #1B2A41;
+    --muted: #55637A;
+    --line: #D3DCE9;
+    --accent: #2557B8;
+    --accent-ink: #FBFCFE;
+    --amber: #F2A93B;
+    --code-bg: #FBFCFE;
+    --code-ink: #1B2A41;
+    --gutter: #8A96A8;
+    --out-bg: #1B2A41;
+    --out-ink: #E6ECF5;
+    --out-dim: #9FB0C8;
+    --err: #FF9C8A;
+    --ok: #8FD9A8;
+    --chip: #E3EAF6;
+    --syn-kw: #8A3FB5; --syn-fn: #2557B8; --syn-call: #0F7C74; --syn-str: #2E7D32; --syn-num: #B45309; --syn-com: #7A8699;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111A28; --panel: #18243A; --ink: #E8EEF7; --muted: #A3B1C6; --line: #2A3A55;
+      --accent: #6E9BF0; --accent-ink: #0E1726; --code-bg: #152033; --code-ink: #E8EEF7;
+      --gutter: #5D6E88; --out-bg: #0B121D; --chip: #22314B; color-scheme: dark;
+      --syn-kw: #D4A5F5; --syn-fn: #8AB4FF; --syn-call: #5FD3C4; --syn-str: #A5D6A7; --syn-num: #F2B866; --syn-com: #7F8FA6;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111A28; --panel: #18243A; --ink: #E8EEF7; --muted: #A3B1C6; --line: #2A3A55;
+    --accent: #6E9BF0; --accent-ink: #0E1726; --code-bg: #152033; --code-ink: #E8EEF7;
+    --gutter: #5D6E88; --out-bg: #0B121D; --chip: #22314B; color-scheme: dark;
+      --syn-kw: #D4A5F5; --syn-fn: #8AB4FF; --syn-call: #5FD3C4; --syn-str: #A5D6A7; --syn-num: #F2B866; --syn-com: #7F8FA6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.5 "Nunito Sans", Arial, sans-serif;
+    padding: 20px 16px 32px;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+  h1 { font: 600 30px/1.1 Fredoka, Arial, sans-serif; margin: 0; text-wrap: balance; }
+  h1 .py { color: var(--accent); }
+  .sub { margin: 4px 0 0; color: var(--muted); }
+  .status { font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--amber); }
+  .dot.ready { background: #3BAA6A; }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .examples span { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+  .chip {
+    font: 600 14px "Nunito Sans", Arial, sans-serif; color: var(--ink);
+    background: var(--chip); border: 1px solid transparent; border-radius: 999px; padding: 6px 14px; cursor: pointer;
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .panes { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 820px) { .panes { grid-template-columns: minmax(0, 1fr); } }
+  .pane { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; min-height: 460px; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .bar .label { font: 600 16px Fredoka, Arial, sans-serif; margin-right: auto; }
+  button {
+    font: 700 15px "Nunito Sans", Arial, sans-serif; border-radius: 10px; padding: 8px 16px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  }
+  button.run { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  button.run:disabled { opacity: .55; cursor: wait; }
+  button.stop { border-color: #C2453A; color: #C2453A; }
+  button[hidden] { display: none !important; }
+  .kbd { font-size: 12px; color: var(--muted); }
+  .editor { position: relative; flex: 1; display: flex; background: var(--code-bg); min-height: 400px; }
+  .gutter {
+    font: 15px/1.6 "JetBrains Mono", "Courier New", monospace; color: var(--gutter);
+    padding: 14px 10px 14px 6px; text-align: right; user-select: none; overflow: hidden;
+    border-right: 1px solid var(--line); font-variant-numeric: tabular-nums; min-width: 58px;
+  }
+  .ln { height: 24px; padding-left: 22px; position: relative; cursor: pointer; border-radius: 6px; }
+  .ln:hover { color: var(--ink); }
+  .ln:hover::before { content: ""; position: absolute; left: 4px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: #C2453A; opacity: .3; }
+  .ln.bp { color: #C2453A; font-weight: 600; }
+  .ln.bp::before { content: ""; position: absolute; left: 4px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: #C2453A; opacity: 1; }
+  .ln.cur { background: var(--amber); color: #1B2A41; font-weight: 600; }
+  .codebox { position: relative; flex: 1; display: flex; min-width: 0; }
+  #hl { position: absolute; left: 0; right: 0; height: 24px; background: rgba(242, 169, 59, .28); border-left: 4px solid var(--amber); pointer-events: none; }
+  #hl[hidden] { display: none !important; }
+  button.dbg { border-color: var(--amber); }
+  #debug { border-top: 1px solid #2A3A55; padding: 12px 16px 14px; color: var(--out-ink); background: #142034; }
+  #debug[hidden] { display: none !important; }
+  #debug h3 { margin: 0 0 8px; font: 600 16px Fredoka, Arial, sans-serif; color: var(--amber); }
+  #debug .vars-scroll { max-height: 220px; overflow: auto; }
+  #debug table { width: 100%; border-collapse: collapse; font: 14px/1.5 "JetBrains Mono", "Courier New", monospace; }
+  #debug th { text-align: left; font: 700 12px "Nunito Sans", Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--out-dim); padding: 4px 8px; border-bottom: 1px solid #2A3A55; }
+  #debug td { padding: 4px 8px; border-bottom: 1px solid #22314B; vertical-align: top; word-break: break-word; }
+  #debug td.t { color: var(--out-dim); }
+  #debug tr.changed td { background: rgba(143, 217, 168, .14); }
+  #debug .none { color: var(--out-dim); font-size: 14px; margin: 0; }
+  #debug .scope { margin: 10px 0 4px; font: 700 12px "Nunito Sans", Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--out-dim); }
+  textarea#code, #hi {
+    font: 15px/1.6 "JetBrains Mono", "Courier New", monospace; padding: 14px; tab-size: 4;
+    white-space: pre; letter-spacing: 0; font-variant-ligatures: none;
+  }
+  textarea#code {
+    position: relative; flex: 1; border: 0; resize: none; background: transparent;
+    color: transparent; caret-color: var(--code-ink); -webkit-text-fill-color: transparent;
+    overflow: auto; outline: none; margin: 0;
+  }
+  textarea#code::selection { background: rgba(37, 87, 184, .3); }
+  #hi { position: absolute; inset: 0; margin: 0; overflow: hidden; color: var(--code-ink); pointer-events: none; }
+  #hi .kw { color: var(--syn-kw); font-weight: 600; }
+  #hi .fn { color: var(--syn-fn); font-weight: 600; }
+  #hi .call { color: var(--syn-call); font-weight: 600; }
+  #hi .str { color: var(--syn-str); }
+  #hi .num { color: var(--syn-num); }
+  #hi .com { color: var(--syn-com); font-style: italic; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 8px 14px; border-top: 1px solid var(--line); font: 13px "JetBrains Mono", "Courier New", monospace; }
+  .legend .kw { color: var(--syn-kw); font-weight: 600; }
+  .legend .fn { color: var(--syn-fn); font-weight: 600; }
+  .legend .call { color: var(--syn-call); font-weight: 600; }
+  .legend .str { color: var(--syn-str); }
+  .legend .num { color: var(--syn-num); }
+  .legend .com { color: var(--syn-com); font-style: italic; }
+  .out-pane { background: var(--out-bg); border-color: var(--out-bg); }
+  .out-pane .bar { border-bottom-color: #2A3A55; }
+  .out-pane .bar .label { color: var(--out-ink); }
+  .out-pane button { background: transparent; color: var(--out-ink); border-color: #3A4D6B; }
+  #output {
+    flex: 1; margin: 0; padding: 14px 16px; overflow: auto; color: var(--out-ink);
+    font: 15px/1.6 "JetBrains Mono", "Courier New", monospace; white-space: pre-wrap; word-break: break-word;
+  }
+  #output .dim { color: var(--out-dim); }
+  #output .err { color: var(--err); }
+  #output .hint { color: var(--amber); font-family: "Nunito Sans", Arial, sans-serif; font-size: 15px; }
+  #output .ok { color: var(--ok); }
+  #output .typed { color: var(--amber); }
+  .ask { display: inline-flex; gap: 8px; align-items: center; margin-top: 2px; }
+  .ask input {
+    font: 15px "JetBrains Mono", "Courier New", monospace; background: #24364F; color: var(--out-ink);
+    border: 1px solid var(--amber); border-radius: 8px; padding: 4px 10px; width: min(260px, 60vw);
+  }
+  #turtle-wrap { border-top: 1px solid #2A3A55; padding: 12px; background: #FBFCFE; }
+  #turtle-wrap[hidden] { display: none !important; }
+  #turtle { max-width: 100%; overflow: auto; }
+  .tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .tip { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+  .tip h2 { font: 600 16px Fredoka, Arial, sans-serif; margin: 0 0 4px; }
+  .tip p { margin: 0; color: var(--muted); font-size: 15px; }
+  .tip code { font: 14px "JetBrains Mono", "Courier New", monospace; color: var(--ink); background: var(--chip); padding: 1px 5px; border-radius: 5px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Coding Class <span class="py">Python</span> Lab</h1>
+      <p class="sub">Type Python on the left, press <b>Run</b>, and see what happens on the right.</p>
+    </div>
+    <div class="status" aria-live="polite"><span class="dot" id="dot"></span><span id="status-text">Loading Python…</span></div>
+  </header>
+
+  <div class="examples" id="examples"><span>Try an example</span></div>
+
+  <div class="panes">
+    <section class="pane" aria-label="Code editor">
+      <div class="bar">
+        <span class="label">Your code</span>
+        <span class="kbd">Ctrl + Enter to run</span>
+        <button class="run" id="run" disabled>▶ Run</button>
+        <button class="dbg" id="step" disabled title="Run one line at a time">Step through</button>
+        <button class="run" id="next" hidden title="Run the highlighted line, then pause again">Next line ↓</button>
+        <button class="dbg" id="cont" hidden title="Keep running until the next red stop point">Continue ▶</button>
+        <button class="stop" id="stop" hidden>■ Stop</button>
+      </div>
+      <div class="editor">
+        <div class="gutter" id="gutter" title="Click a line number to add or remove a stop point"></div>
+        <div class="codebox">
+          <div id="hl" hidden></div>
+          <pre id="hi" aria-hidden="true"></pre>
+          <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Python code"></textarea>
+        </div>
+      </div>
+      <div class="legend" aria-label="Color key">
+        <span class="fn">print() built-in</span>
+        <span class="call">my_func() your own &amp; module functions</span>
+        <span class="kw">if for def keyword</span>
+        <span class="str">"text"</span>
+        <span class="num">42 number</span>
+        <span class="com"># comment</span>
+      </div>
+    </section>
+
+    <section class="pane out-pane" aria-label="Output">
+      <div class="bar">
+        <span class="label">Output</span>
+        <button id="clear">Clear</button>
+      </div>
+      <pre id="output" aria-live="polite"><span class="dim">Your results will show up here.</span></pre>
+      <div id="debug" hidden aria-live="polite">
+        <h3 id="debug-title">Paused</h3>
+        <div class="vars-scroll" id="vars"></div>
+      </div>
+      <div id="turtle-wrap" hidden><div id="turtle"></div></div>
+    </section>
+  </div>
+
+  <div class="tips">
+    <div class="tip"><h2>Show something</h2><p><code>print("Hello")</code> writes text. <code>print(2 + 3)</code> does math.</p></div>
+    <div class="tip"><h2>Ask a question</h2><p><code>name = input("Name? ")</code> waits for you to type in the output box.</p></div>
+    <div class="tip"><h2>Binary tricks</h2><p><code>bin(13)</code> gives <code>0b1101</code>. <code>int("1101", 2)</code> gives 13.</p></div>
+    <div class="tip"><h2>Hunt for bugs</h2><p>Click a line number to add a red stop point. <b>Run</b> pauses there and shows every variable. Or press <b>Step through</b> to go one line at a time.</p></div>
+    <div class="tip"><h2>Stuck in a loop?</h2><p>Press <b>Stop</b>. Indent the lines inside <code>if</code>, <code>for</code> and <code>while</code> with 4 spaces.</p></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+<script>
+(function () {
+  const EXAMPLES = {
+    "Hello": `# Lines starting with # are comments. Python skips them.
+print("Hello, coders!")
+print("2 + 3 =", 2 + 3)
+print("10 x 10 =", 10 * 10)`,
+    "Your name": `name = input("What is your name? ")
+age = int(input("How old are you? "))
+print("Hi", name + "!")
+print("Next year you will be", age + 1)`,
+    "Decimal to binary": `number = int(input("Pick a number: "))
+print(number, "in binary is", bin(number)[2:])
+
+# bin() gives something like 0b1101.
+# [2:] cuts off the "0b" at the front.`,
+    "Binary to decimal": `code = input("Type a binary number (only 0s and 1s): ")
+print(code, "in binary =", int(code, 2))
+
+# Do it by hand, column by column:
+total = 0
+value = 1
+for digit in reversed(code):
+    if digit == "1":
+        print("  column", value, "is ON")
+        total = total + value
+    value = value * 2
+print("Total:", total)`,
+    "Count in binary": `for n in range(17):
+    print(n, "->", bin(n)[2:].zfill(5))`,
+    "Mayan numbers": `n = int(input("Pick a number from 0 to 19: "))
+bars = n // 5
+dots = n % 5
+if n == 0:
+    print("(shell)")
+else:
+    print("o " * dots)
+    for i in range(bars):
+        print("=====")`,
+    "Guess my number": `import random
+secret = random.randint(1, 20)
+tries = 0
+guess = 0
+while guess != secret:
+    guess = int(input("Guess 1 to 20: "))
+    tries = tries + 1
+    if guess < secret:
+        print("Too low!")
+    elif guess > secret:
+        print("Too high!")
+print("You got it in", tries, "tries!")`,
+    "Turtle drawing": `import turtle
+t = turtle.Turtle()
+t.speed(6)
+colors = ["red", "orange", "green", "blue"]
+for i in range(36):
+    t.color(colors[i % 4])
+    t.forward(120)
+    t.left(170)`
+  };
+
+  const codeEl = document.getElementById("code");
+  const gutter = document.getElementById("gutter");
+  const output = document.getElementById("output");
+  const runBtn = document.getElementById("run");
+  const stopBtn = document.getElementById("stop");
+  const clearBtn = document.getElementById("clear");
+  const dot = document.getElementById("dot");
+  const statusText = document.getElementById("status-text");
+  const turtleWrap = document.getElementById("turtle-wrap");
+  const turtleDiv = document.getElementById("turtle");
+  const exBox = document.getElementById("examples");
+
+  const DRAFT_KEY = "pylab-draft";
+  let stopRequested = false;
+  const breakpoints = new Set();
+  let running = false;
+  let pendingInput = null;
+
+  // Editor
+  function saveDraft() { try { localStorage.setItem(DRAFT_KEY, codeEl.value); } catch (e) {} }
+  const hiEl = document.getElementById("hi");
+  const KEYWORDS = new Set("and as assert break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield True False None".split(" "));
+  const BUILTINS = new Set("print input int float str bool bin hex oct ord chr len range list dict set tuple abs round min max sum sorted reversed enumerate zip type isinstance map filter any all pow divmod format open help".split(" "));
+  const TOKEN = /(#[^\n]*)|([rRbBfFuU]{0,2}(?:"""[\s\S]*?(?:"""|$)|'\'\'[\s\S]*?(?:'\'\'|$)|"(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?))|(\b\d+(?:\.\d+)?\b)|([A-Za-z_][A-Za-z0-9_]*)/g;
+  const PAREN = /\s*\(/y;
+  function escHtml(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function highlight() {
+    const src = codeEl.value;
+    let html = "", last = 0, m;
+    TOKEN.lastIndex = 0;
+    while ((m = TOKEN.exec(src))) {
+      if (m[0] === "") { TOKEN.lastIndex++; continue; }
+      html += escHtml(src.slice(last, m.index));
+      let cls = "";
+      if (m[1]) cls = "com";
+      else if (m[2]) cls = "str";
+      else if (m[3]) cls = "num";
+      else if (m[4]) {
+        PAREN.lastIndex = m.index + m[0].length;
+        const isCall = PAREN.test(src);
+        const prev = src.slice(Math.max(0, m.index - 4), m.index);
+        if (KEYWORDS.has(m[4])) cls = "kw";
+        else if (/def\s+$/.test(prev) || (isCall && !BUILTINS.has(m[4]))) cls = "call";
+        else if (BUILTINS.has(m[4]) && isCall) cls = "fn";
+      }
+      html += cls ? '<span class="' + cls + '">' + escHtml(m[0]) + "</span>" : escHtml(m[0]);
+      last = m.index + m[0].length;
+    }
+    html += escHtml(src.slice(last)) + "\n";
+    hiEl.innerHTML = html;
+    syncScroll();
+  }
+  function syncScroll() { hiEl.scrollTop = codeEl.scrollTop; hiEl.scrollLeft = codeEl.scrollLeft; }
+  function setCode(src) { codeEl.value = src; updateGutter(); highlight(); saveDraft(); }
+
+  codeEl.addEventListener("input", () => { updateGutter(); highlight(); saveDraft(); });
+  codeEl.addEventListener("scroll", () => { gutter.scrollTop = codeEl.scrollTop; syncScroll(); });
+  codeEl.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run("run"); return; }
+    const start = codeEl.selectionStart, end = codeEl.selectionEnd, v = codeEl.value;
+    if (e.key === "Tab") {
+      e.preventDefault();
+      if (e.shiftKey) {
+        const ls = v.lastIndexOf("\n", start - 1) + 1;
+        const n = v.slice(ls, ls + 4).match(/^ {0,4}/)[0].length;
+        if (n) { codeEl.setRangeText("", ls, ls + n, "preserve"); }
+      } else {
+        codeEl.setRangeText("    ", start, end, "end");
+      }
+      codeEl.dispatchEvent(new Event("input"));
+    } else if (e.key === "Enter" && !e.shiftKey) {
+      const ls = v.lastIndexOf("\n", start - 1) + 1;
+      const line = v.slice(ls, start);
+      let indent = line.match(/^\s*/)[0];
+      if (/:\s*(#.*)?$/.test(line)) indent += "    ";
+      e.preventDefault();
+      codeEl.setRangeText("\n" + indent, start, end, "end");
+      codeEl.dispatchEvent(new Event("input"));
+    }
+  });
+
+  Object.keys(EXAMPLES).forEach((name) => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button"; b.textContent = name;
+    b.addEventListener("click", () => { if (!running) { setCode(EXAMPLES[name]); codeEl.focus(); } });
+    exBox.appendChild(b);
+  });
+
+  let saved = null;
+  try { saved = localStorage.getItem(DRAFT_KEY); } catch (e) {}
+  setCode(saved && saved.trim() ? saved : EXAMPLES["Decimal to binary"]);
+
+  // Output helpers
+  function write(text, cls) {
+    const span = document.createElement("span");
+    if (cls) span.className = cls;
+    span.textContent = text;
+    output.appendChild(span);
+    output.scrollTop = output.scrollHeight;
+  }
+  function clearOutput() { output.textContent = ""; turtleDiv.innerHTML = ""; turtleWrap.hidden = true; }
+
+  function askInput(prompt) {
+    return new Promise((resolve, reject) => {
+      if (prompt) write(String(prompt));
+      const box = document.createElement("span");
+      box.className = "ask";
+      const inp = document.createElement("input");
+      inp.type = "text"; inp.id = "ask-" + Date.now(); inp.setAttribute("aria-label", "Type your answer and press Enter");
+      inp.placeholder = "type, then Enter";
+      box.appendChild(inp);
+      output.appendChild(box);
+      output.scrollTop = output.scrollHeight;
+      inp.focus();
+      pendingInput = { box, resolve, reject };
+      inp.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const val = inp.value;
+          box.remove();
+          write(val + "\n", "typed");
+          pendingInput = null;
+          resolve(val);
+        }
+      });
+    });
+  }
+
+  const HINTS = {
+    NameError: "Python doesn't know that name. Check the spelling, and put text inside quotes like \"hello\".",
+    SyntaxError: "Something is typed in a way Python can't read. Look for a missing ( ) or \" \" or : at the end of if/for/while lines.",
+    IndentationError: "The spaces at the start of a line are off. Lines inside if/for/while need 4 spaces.",
+    TypeError: "You mixed types, like adding text and a number. Try int(...) to turn text into a number, or str(...) for the reverse.",
+    ValueError: "That value doesn't fit. For example, int(\"hello\") fails because hello isn't a number.",
+    ZeroDivisionError: "You divided by zero. Nobody can do that, not even a computer!",
+    IndexError: "You asked for a position that doesn't exist in the list or text.",
+    TimeoutError: "Your program ran for a very long time. Is there a loop that never ends?"
+  };
+
+  function showError(err) {
+    let msg = err && err.toString ? err.toString() : String(err);
+    if (err && err.message === "STOPPED") { write("\n■ Stopped.\n", "dim"); return; }
+    write("\n" + msg + "\n", "err");
+    const kind = Object.keys(HINTS).find((k) => msg.indexOf(k) === 0);
+    if (kind) write("Hint: " + HINTS[kind] + "\n", "hint");
+  }
+
+  function builtinRead(file) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles.files[file] === undefined) {
+      throw "File not found: '" + file + "'";
+    }
+    return Sk.builtinFiles.files[file];
+  }
+
+  // Debugger state
+  const stepBtn = document.getElementById("step");
+  const nextBtn = document.getElementById("next");
+  const contBtn = document.getElementById("cont");
+  const hl = document.getElementById("hl");
+  const debugBox = document.getElementById("debug");
+  const debugTitle = document.getElementById("debug-title");
+  const varsBox = document.getElementById("vars");
+  let stepMode = false;
+  let pauseLine = 0;
+  let wantPause = false;
+  let lastBreath = 0;
+  let paused = null;
+  let lastVars = {};
+
+  function setRunning(on) {
+    running = on;
+    runBtn.disabled = on;
+    stepBtn.disabled = on;
+    stopBtn.hidden = !on;
+    codeEl.readOnly = on;
+    if (!on) { showPausedButtons(false); hideLine(); }
+    statusText.textContent = on ? "Running…" : "Ready";
+  }
+
+  function showPausedButtons(on) {
+    nextBtn.hidden = !on;
+    contBtn.hidden = !on;
+    runBtn.hidden = on;
+    stepBtn.hidden = on;
+  }
+
+  function showLine(line) {
+    hl.hidden = false;
+    hl.style.top = (14 + (line - 1) * 24 - codeEl.scrollTop) + "px";
+    gutter.querySelectorAll(".ln.cur").forEach((el) => el.classList.remove("cur"));
+    const ln = gutter.children[line - 1];
+    if (ln) ln.classList.add("cur");
+    const top = 14 + (line - 1) * 24;
+    if (top < codeEl.scrollTop || top > codeEl.scrollTop + codeEl.clientHeight - 48) {
+      codeEl.scrollTop = Math.max(0, top - codeEl.clientHeight / 2);
+    }
+  }
+  function hideLine() {
+    hl.hidden = true;
+    gutter.querySelectorAll(".ln.cur").forEach((el) => el.classList.remove("cur"));
+  }
+
+  const SKIP_TYPES = ["function", "module", "type", "builtin_function_or_method", "method", "NoneType"];
+  function pyVars(obj) {
+    const out = [];
+    if (!obj) return out;
+    Object.keys(obj).forEach((k) => {
+      if (k.charAt(0) === "$" || k.indexOf("__") === 0) return;
+      const v = obj[k];
+      if (!v || typeof v !== "object" || !v.tp$name) return;
+      if (SKIP_TYPES.indexOf(v.tp$name) !== -1) return;
+      let repr;
+      try { repr = Sk.misceval.objectRepr(v); } catch (e) { repr = "?"; }
+      if (repr.length > 200) repr = repr.slice(0, 200) + "…";
+      out.push({ name: k.replace(/_\$rw\$$/, ""), value: repr, type: v.tp$name });
+    });
+    return out;
+  }
+  const TYPE_NAMES = { int: "whole number", float: "decimal number", str: "text", bool: "True/False", list: "list", dict: "dictionary", tuple: "tuple" };
+
+  function renderTable(rows, scopeKey) {
+    if (!rows.length) return '<p class="none">No variables yet.</p>';
+    let h = "<table><tr><th>Name</th><th>Value</th><th>Kind</th></tr>";
+    rows.forEach((r) => {
+      const key = scopeKey + ":" + r.name;
+      const changed = lastVars[key] !== undefined && lastVars[key] !== r.value || lastVars[key] === undefined && Object.keys(lastVars).length > 0;
+      h += "<tr" + (changed ? ' class="changed"' : "") + "><td>" + esc(r.name) + "</td><td>" + esc(r.value) + '</td><td class="t">' + esc(TYPE_NAMES[r.type] || r.type) + "</td></tr>";
+    });
+    return h + "</table>";
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+  function showVars(susp) {
+    let frame = null;
+    for (let s = susp; s; s = s.child) { if (s.$gbl) frame = s; }
+    let html = "";
+    const now = {};
+    if (frame) {
+      const inFunction = frame.$loc && frame.$loc !== frame.$gbl;
+      if (inFunction) {
+        const locals = pyVars(frame.$tmps);
+        html += '<p class="scope">Inside this function</p>' + renderTable(locals, "L");
+        locals.forEach((r) => { now["L:" + r.name] = r.value; });
+        html += '<p class="scope">Main program</p>';
+      }
+      const globals = pyVars(frame.$gbl);
+      html += renderTable(globals, "G");
+      globals.forEach((r) => { now["G:" + r.name] = r.value; });
+    } else {
+      html = '<p class="none">No variables yet.</p>';
+    }
+    varsBox.innerHTML = html;
+    lastVars = now;
+  }
+
+  function pause(susp) {
+    const line = pauseLine;
+    showLine(line);
+    debugBox.hidden = false;
+    debugTitle.textContent = "Paused before line " + line + " runs" + (breakpoints.has(line) ? " (stop point)" : "");
+    showVars(susp);
+    showPausedButtons(true);
+    statusText.textContent = "Paused on line " + line;
+    nextBtn.focus();
+    return new Promise((resolve, reject) => { paused = { resolve, reject }; });
+  }
+  function resume(step) {
+    if (!paused) return;
+    stepMode = step;
+    const p = paused; paused = null;
+    showPausedButtons(false);
+    hideLine();
+    statusText.textContent = "Running…";
+    Sk.execStart = Date.now();
+    p.resolve();
+  }
+
+  // Gutter: line numbers you can click
+  function updateGutter() {
+    const lines = codeEl.value.split("\n").length;
+    if (gutter.children.length !== lines) {
+      let h = "";
+      for (let i = 1; i <= lines; i++) h += '<div class="ln' + (breakpoints.has(i) ? " bp" : "") + '" data-line="' + i + '">' + i + "</div>";
+      gutter.innerHTML = h;
+      breakpoints.forEach((b) => { if (b > lines) breakpoints.delete(b); });
+    }
+    gutter.scrollTop = codeEl.scrollTop;
+  }
+  gutter.addEventListener("click", (e) => {
+    const ln = e.target.closest(".ln");
+    if (!ln) return;
+    const n = Number(ln.dataset.line);
+    if (breakpoints.has(n)) breakpoints.delete(n); else breakpoints.add(n);
+    ln.classList.toggle("bp", breakpoints.has(n));
+  });
+  codeEl.addEventListener("scroll", () => {
+    if (!hl.hidden && pauseLine) hl.style.top = (14 + (pauseLine - 1) * 24 - codeEl.scrollTop) + "px";
+  });
+  updateGutter();
+
+  function run(mode) {
+    if (running || typeof Sk === "undefined") return;
+    clearOutput();
+    debugBox.hidden = true;
+    lastVars = {};
+    stopRequested = false;
+    stepMode = mode === "step";
+    wantPause = false;
+    const debugging = stepMode || breakpoints.size > 0;
+    setRunning(true);
+    const src = codeEl.value;
+    if (/\bturtle\b/.test(src)) {
+      turtleWrap.hidden = false;
+      (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = "turtle";
+      Sk.TurtleGraphics.width = Math.min(560, Math.max(260, turtleWrap.clientWidth - 24));
+      Sk.TurtleGraphics.height = 360;
+    }
+    Sk.configure({
+      output: (t) => write(t),
+      read: builtinRead,
+      inputfun: askInput,
+      inputfunTakesPrompt: true,
+      __future__: Sk.python3,
+      killableWhile: true,
+      killableFor: true,
+      yieldLimit: 100,
+      execLimit: 60000,
+      debugging: debugging,
+      breakpoints: (file, line) => {
+        if (debugging && String(file).indexOf("<stdin>") !== -1 && (stepMode || breakpoints.has(line))) {
+          wantPause = true; pauseLine = line; return true;
+        }
+        // Let the page breathe now and then, so Stop works in long loops.
+        if (Date.now() - lastBreath > 30) { lastBreath = Date.now(); return true; }
+        return false;
+      }
+    });
+    Sk.execStart = Date.now();
+    const p = Sk.misceval.asyncToPromise(
+      () => Sk.importMainWithBody("<stdin>", false, src, true),
+      { "*": (susp) => {
+          if (stopRequested) throw new Error("STOPPED");
+          const type = susp.data && susp.data.type;
+          if (type === "Sk.debug" || type === "Sk.delay") {
+            if (wantPause) { wantPause = false; return pause(susp).then(() => susp.resume()); }
+            if (type === "Sk.debug") return Promise.resolve().then(() => susp.resume());
+          }
+        } }
+    );
+    p.then(() => { write("\n✓ Done\n", "ok"); })
+     .catch(showError)
+     .finally(() => { setRunning(false); debugTitle.textContent = "Variables at the end"; });
+  }
+
+  runBtn.addEventListener("click", () => run("run"));
+  stepBtn.addEventListener("click", () => run("step"));
+  nextBtn.addEventListener("click", () => resume(true));
+  contBtn.addEventListener("click", () => resume(false));
+  stopBtn.addEventListener("click", () => {
+    stopRequested = true;
+    if (pendingInput) { pendingInput.box.remove(); const r = pendingInput.reject; pendingInput = null; r(new Error("STOPPED")); }
+    if (paused) { const r = paused.reject; paused = null; r(new Error("STOPPED")); }
+  });
+  clearBtn.addEventListener("click", () => { if (!running) { clearOutput(); debugBox.hidden = true; } });
+
+  function ready() {
+    if (typeof Sk === "undefined" || !Sk.builtinFiles) {
+      statusText.textContent = "Python could not load. Check your internet and reload.";
+      return;
+    }
+    dot.classList.add("ready");
+    statusText.textContent = "Ready";
+    runBtn.disabled = false;
+    stepBtn.disabled = false;
+  }
+  if (document.readyState === "complete") ready(); else window.addEventListener("load", ready);
+})();
+</script>
+
+</body></html>
